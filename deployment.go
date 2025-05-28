@@ -38,7 +38,19 @@ func GetSudt(config Config) (*deployment.SUDTInfo, error) {
 }
 
 func GetPubKey(key string) (secp256k1.PublicKey, error) {
-	panic("Unimplemeted")
+	bytes, err := hex.DecodeString(key)
+	if err != nil {
+		return secp256k1.PublicKey{}, fmt.Errorf("decoding public key: %w", err)
+	}
+
+	if len(bytes) != 33 {
+		return secp256k1.PublicKey{}, fmt.Errorf("invalid public key length: expected 33 bytes, got %d", len(bytes))
+	}
+	pubKey, err := secp256k1.ParsePubKey(bytes)
+	if err != nil {
+		return secp256k1.PublicKey{}, fmt.Errorf("parsing public key: %w", err)
+	}
+	return *pubKey, nil
 }
 
 func GetDeployment(config Config, network types.Network) (backend.Deployment, deployment.SUDTInfo, error) {
