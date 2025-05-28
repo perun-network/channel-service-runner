@@ -137,14 +137,8 @@ require (
 	perun.network/go-perun v0.12.0 // indirect
 )
 
-// replace github.com/nervosnetwork/ckb-sdk-go/v2 => github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20241016165355-d1c9686fe018
-
 replace github.com/nervosnetwork/ckb-sdk-go/v2 v2.2.0 => github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20240618093616-6d9d92aa863d
-
-// replace github.com/nervosnetwork/ckb-sdk-go/v2 v2.2.0 => github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20230601140721-2bf596fddd80
 
 // replace github.com/cnervosnetwork/ckb-sdk-go/v2 v2.2.0 => /home/mekjarov/code/channel-service-project/ckb-sdk-go
 
 replace perun.network/channel-service v0.0.0 => github.com/perun-network/channel-service v0.0.0-20250324170138-dbd66a8641d5
-
-replace perun.network/perun-ckb-backend v0.0.0-20240514141411-35bdf3afa166 => /home/mekjarov/code/channel-service-project/perun-ckb-backend
