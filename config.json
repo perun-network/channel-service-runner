@@ -1,10 +1,10 @@
 {
-    "host": "127.0.0.1:4322",
-    "ws_url": "ws://localhost:50051",
+    "host": ":4322",
+    "ws_url": "localhost:50051",
     "network": "testnet",
     "testnet_rpc_node_url": "https://testnet.ckbapp.dev/",
     "devnet_rpc_node_url": "http://localhost:8114",
-    "public_key": "0x123456789abcdef",
+    "public_key": "02e86159f6a10acddc4635f28edbe0429500ae795bbc95c0c3d7aa0a99fc35be8b",
     "sudt_owner_lock_arg": "0x4472b33b4e1845ebe82f2ce5f511bbe012f144c5f3d7b539909adffc83ccda61",
     "system_scripts": {
       "dao": {
