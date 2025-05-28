@@ -72,17 +72,15 @@ func main() {
 }
 
 type Config struct {
-	Host              string                   `json:"host"`
-	WSSURL            string                   `json:"ws_url"`
-	Network           string                   `json:"network"`
-	TestnetRPCNodeURL string                   `json:"testnet_rpc_node_url"`
-	DevnetRPCNodeURL  string                   `json:"devnet_rpc_node_url"`
-	PublicKey         string                   `json:"public_key"`
-	SUDTOwnerLockArg  string                   `json:"sudt_owner_lock_arg"`
-	SystemScripts     deployment.SystemScripts `json:"system_scripts"`
-	MigrationData     deployment.Migration     `json:"migration_data"`
-	Database          string                   `json:"database"`
-	Logfile           string                   `json:"logfile"`
+	Host              string `json:"host"`
+	WSSURL            string `json:"ws_url"`
+	Network           string `json:"network"`
+	TestnetRPCNodeURL string `json:"testnet_rpc_node_url"`
+	DevnetRPCNodeURL  string `json:"devnet_rpc_node_url"`
+	PublicKey         string `json:"public_key"`
+	SUDTOwnerLockArg  string `json:"sudt_owner_lock_arg"`
+	Database          string `json:"database"`
+	Logfile           string `json:"logfile"`
 }
 
 func Start() {
@@ -107,6 +105,38 @@ func Start() {
 	}
 	SetLogFile(config.Logfile)
 
+	systemScriptsPath := flag.String("system_scripts", "./testnet/default_scripts.json", "path to system scripts json file")
+	flag.Parse()
+	systemScriptsFile, err := os.Open(*systemScriptsPath)
+	if err != nil {
+		log.Fatalf("Failed to open system scripts file: %v", err)
+	}
+	defer systemScriptsFile.Close()
+
+	data, err = io.ReadAll(systemScriptsFile)
+	if err != nil {
+		log.Fatalf("Failed to read system scripts file: %v", err)
+	}
+	var systemScripts deployment.SystemScripts
+	if err := json.Unmarshal(data, &systemScripts); err != nil {
+		log.Fatalf("Failed to parse system scripts file: %v", err)
+	}
+
+	deployedScriptsPath := flag.String("migration_data", "./testnet/contracts_cell_deps.json", "path to data on on-chain deployed scripts")
+	flag.Parse()
+	migrationDataFile, err := os.Open(*deployedScriptsPath)
+	if err != nil {
+		log.Fatalf("Failed to open migration data file: %v", err)
+	}
+	defer migrationDataFile.Close()
+	data, err = io.ReadAll(migrationDataFile)
+	if err != nil {
+		log.Fatalf("Failed to read migration data file: %v", err)
+	}
+	var migrationData deployment.Migration
+	if err := json.Unmarshal(data, &migrationData); err != nil {
+		log.Fatalf("Failed to parse migration data file: %v", err)
+	}
 	var network types.Network
 	var rpcNodeUrl string
 	if config.Network == "testnet" {
@@ -123,7 +153,7 @@ func Start() {
 		panic("Invalid network type")
 	}
 
-	deploy, _, err := GetDeployment(config, network)
+	deploy, _, err := GetDeployment(config, systemScripts, migrationData, network)
 	if err != nil {
 		log.Fatalf("Failed to get deployment: %v", err)
 	}

@@ -11,8 +11,8 @@ import (
 	"perun.network/perun-ckb-backend/backend"
 )
 
-func GetSudt(config Config) (*deployment.SUDTInfo, error) {
-	sudt := config.MigrationData.CellRecipes[3]
+func GetSudt(migrationData deployment.Migration) (*deployment.SUDTInfo, error) {
+	sudt := migrationData.CellRecipes[3]
 	if sudt.Name != "sudt" {
 		return nil, fmt.Errorf("fourth cell recipe must be sudt, got %s", sudt.Name)
 	}
@@ -53,25 +53,23 @@ func GetPubKey(key string) (secp256k1.PublicKey, error) {
 	return *pubKey, nil
 }
 
-func GetDeployment(config Config, network types.Network) (backend.Deployment, deployment.SUDTInfo, error) {
-	//read system scripts
-	// read scripts for contract code
-	pcts := config.MigrationData.CellRecipes[0]
+func GetDeployment(config Config, systemScripts deployment.SystemScripts, migrationData deployment.Migration, network types.Network) (backend.Deployment, deployment.SUDTInfo, error) {
+	pcts := migrationData.CellRecipes[0]
 	if pcts.Name != "pcts" {
 		return backend.Deployment{}, deployment.SUDTInfo{}, fmt.Errorf("first cell recipe must be pcts, got %s", pcts.Name)
 	}
 
-	pcls := config.MigrationData.CellRecipes[1]
+	pcls := migrationData.CellRecipes[1]
 	if pcls.Name != "pcls" {
 		return backend.Deployment{}, deployment.SUDTInfo{}, fmt.Errorf("second cell recipe must be pcls, got %s", pcls.Name)
 	}
 
-	pfls := config.MigrationData.CellRecipes[2]
+	pfls := migrationData.CellRecipes[2]
 	if pfls.Name != "pfls" {
 		return backend.Deployment{}, deployment.SUDTInfo{}, fmt.Errorf("third cell recipe must be pfls, got %s", pfls.Name)
 	}
 
-	sudtInfo, err := GetSudt(config)
+	sudtInfo, err := GetSudt(migrationData)
 	if err != nil {
 		return backend.Deployment{}, deployment.SUDTInfo{}, fmt.Errorf("getting sudt info: %w", err)
 	}
@@ -91,21 +89,21 @@ func GetDeployment(config Config, network types.Network) (backend.Deployment, de
 		PCTSDep: types.CellDep{
 			OutPoint: &types.OutPoint{
 				TxHash: types.HexToHash(pcts.TxHash),
-				Index:  config.MigrationData.CellRecipes[0].Index,
+				Index:  migrationData.CellRecipes[0].Index,
 			},
 			DepType: types.DepTypeCode,
 		},
 		PCLSDep: types.CellDep{
 			OutPoint: &types.OutPoint{
 				TxHash: types.HexToHash(pcls.TxHash),
-				Index:  config.MigrationData.CellRecipes[1].Index,
+				Index:  migrationData.CellRecipes[1].Index,
 			},
 			DepType: types.DepTypeCode,
 		},
 		PFLSDep: types.CellDep{
 			OutPoint: &types.OutPoint{
 				TxHash: types.HexToHash(pfls.TxHash),
-				Index:  config.MigrationData.CellRecipes[2].Index,
+				Index:  migrationData.CellRecipes[2].Index,
 			},
 			DepType: types.DepTypeCode,
 		},
@@ -117,11 +115,11 @@ func GetDeployment(config Config, network types.Network) (backend.Deployment, de
 		PFLSHashType:    types.HashTypeData1,
 		PFLSMinCapacity: deployment.PFLSMinCapacity,
 		DefaultLockScript: types.Script{
-			CodeHash: config.SystemScripts.Secp256k1Blake160SighashAll.ScriptID.CodeHash,
-			HashType: config.SystemScripts.Secp256k1Blake160SighashAll.ScriptID.HashType,
+			CodeHash: systemScripts.Secp256k1Blake160SighashAll.ScriptID.CodeHash,
+			HashType: systemScripts.Secp256k1Blake160SighashAll.ScriptID.HashType,
 			Args:     make([]byte, 32),
 		},
-		DefaultLockScriptDep: config.SystemScripts.Secp256k1Blake160SighashAll.CellDep,
+		DefaultLockScriptDep: systemScripts.Secp256k1Blake160SighashAll.CellDep,
 		SUDTDeps: map[types.Hash]types.CellDep{
 			sudtInfo.Script.Hash(): *sudtInfo.CellDep,
 		},
