@@ -8,7 +8,7 @@
   <a href="https://www.apache.org/licenses/LICENSE-2.0.txt"><img src="https://img.shields.io/badge/license-Apache%202-blue" alt="License: Apache 2.0"></a>
 </p>
 
-This repository contains contains a go-service for running perun-channel-service.
+This repository contains a go-service for running perun-channel-service. To run this service add your details in the config.json, compile and execute. 
 
 ## Config
 
@@ -22,5 +22,3 @@ This repository contains contains a go-service for running perun-channel-service
 | `public_key`| Public key of the user (wallet)                         |
 | `database`  | Path for database                                       |
 | `logfile`   | Path for logfile                                        |
-
-
