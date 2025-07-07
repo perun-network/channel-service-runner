@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0
 	github.com/nervosnetwork/ckb-sdk-go/v2 v2.2.0
-	google.golang.org/grpc v1.72.2
+	google.golang.org/grpc v1.73.0
 	perun.network/channel-service v0.0.0
 	perun.network/perun-ckb-backend v0.0.0-20240514141411-35bdf3afa166
 	polycry.pt/poly-go v0.0.0-20220301085937-fb9d71b45a37
@@ -139,6 +139,4 @@ require (
 
 replace github.com/nervosnetwork/ckb-sdk-go/v2 v2.2.0 => github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20240618093616-6d9d92aa863d
 
-// replace github.com/cnervosnetwork/ckb-sdk-go/v2 v2.2.0 => /home/mekjarov/code/channel-service-project/ckb-sdk-go
-
-replace perun.network/channel-service v0.0.0 => github.com/perun-network/channel-service v0.0.0-20250324170138-dbd66a8641d5
+replace perun.network/channel-service => github.com/perun-network/channel-service v0.7.1-0.20250707193026-fb07a60604db
